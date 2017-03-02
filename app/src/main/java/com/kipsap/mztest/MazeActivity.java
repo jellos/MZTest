@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView; //blaap
+import android.widget.TextView;
 
 public class MazeActivity extends Activity
 {
@@ -60,9 +60,6 @@ public class MazeActivity extends Activity
     {
         customCanvas.setTimeForward(false);
         lTimeStartPressed = System.currentTimeMillis();
-
-        //mainTimeHandler.postDelayed(mainTimeRunnable, 0);
-
         customCanvas.nextStep();
     }
 
@@ -70,9 +67,6 @@ public class MazeActivity extends Activity
     {
         customCanvas.setTimeForward(true);
         lTimeStartPressed = System.currentTimeMillis();
-
-        //mainTimeHandler.postDelayed(mainTimeRunnable, 0);
-
         customCanvas.nextStep();
     }
 

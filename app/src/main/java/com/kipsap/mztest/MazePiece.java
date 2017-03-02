@@ -20,9 +20,9 @@ public class MazePiece
         mzString = mzstr;
 
         vCircles = new Vector<>();
-        for (int circle = 0; circle < iWidth * 3; circle++)
+        for (double circle = 0.0; circle < iWidth * 3; circle++)
         {
-            Circle c = new Circle((double) circle, 1);
+            Circle c = new Circle(circle, 1);
             vCircles.addElement(c);
         }
     }

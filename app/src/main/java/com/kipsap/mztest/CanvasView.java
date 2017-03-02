@@ -26,7 +26,7 @@ public class CanvasView extends View
                     mBlackPathPaint;
     private float mX, mY;
     private static final float TOLERANCE = 5;
-    private static final float STEP_SIZE = 50f;
+    private static float STEP_SIZE = 100f;
 
     private float fZoomPercentage = 100.f;
     private boolean bForwardInTime = true;
@@ -39,9 +39,15 @@ public class CanvasView extends View
     {
         String str;
         if (bForwardInTime)
+        {
             fZoomPercentage += STEP_SIZE;
-        else
+            STEP_SIZE *= 2;
+        }
+        else if (STEP_SIZE > 50)
+        {
+            STEP_SIZE /= 2;
             fZoomPercentage -= STEP_SIZE;
+        }
         String f = String.format("%2.2f", fZoomPercentage);
         str = "zoom: " + f;
         parent.updateZoomLevel(str);
