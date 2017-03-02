@@ -36,7 +36,7 @@ public class CanvasView extends View
 
     private int iMazeSegments = 6; // = height
     private int iMazeDepth = 4; // = width
-    private Maze theMaze = new Maze(iMazeDepth, iMazeSegments, 7, 0, "6bac9aa259cd5516361c9a67"); // goed is: 6bac9aa259cd5516361c9a67
+    private MazePiece theMazePiece = new MazePiece(iMazeDepth, iMazeSegments, 7, 0, "6bac9aa259cd5516361c9a67"); // goed is: 6bac9aa259cd5516361c9a67
 
     public void nextStep()
     {
@@ -143,19 +143,12 @@ public class CanvasView extends View
         {
             Circle c = vCircles.elementAt(i);
             mGreenMazeLinePaint.setStrokeWidth(c.getStrokeWidth());
-            //if (i != 0)
-            //   canvas.drawCircle(c.getX(), c.getY(), c.getRadius(), mGreenMazeLinePaint);
-            //else
+            for (int segment = 0; segment < iMazeSegments; segment++)
             {
-                for (int segment = 0; segment < iMazeSegments; segment++)
-                {
-                    boolean bHasWallSegment = theMaze.hasWallSegmentAt(i, segment);
-                    if (bHasWallSegment)
-                        canvas.drawArc(c.getRect(), segment * 60.f, 60.f, false, mGreenMazeLinePaint);
-                }
+                boolean bHasWallSegment = theMazePiece.hasWallSegmentAt(i, segment);
+                if (bHasWallSegment)
+                    canvas.drawArc(c.getRect(), segment * 60.f, 60.f, false, mGreenMazeLinePaint);
             }
-
-
         }
 
         //canvas.drawCircle(m_iScreenWidth / 2, m_iScreenHeight / 2, fRadius / 4, mGreenMazeLinePaint);

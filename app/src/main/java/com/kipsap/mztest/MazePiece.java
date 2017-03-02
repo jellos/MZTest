@@ -1,6 +1,6 @@
 package com.kipsap.mztest;
 
-public class Maze
+public class MazePiece
 {
     private int iWidth;
     private int iHeight;
@@ -8,7 +8,7 @@ public class Maze
     private int iExit;
     private String mzString;
 
-    public Maze(int width, int height, int entrance, int exit, String mzstr)
+    public MazePiece(int width, int height, int entrance, int exit, String mzstr)
     {
         iWidth = width;
         iHeight = height;
@@ -19,7 +19,7 @@ public class Maze
 
     public boolean hasWallSegmentAt(int level, int yPos)
     {
-        //checks if a certain position has a wall on the right side
+        //checks if a certain position has a wall on the right (=outer) side
         int x = iWidth - level - 1;
         int idx = yPos * iWidth + x;
         char c = mzString.charAt(idx);
