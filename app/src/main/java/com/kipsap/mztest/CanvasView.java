@@ -9,7 +9,6 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import java.util.Vector;
 
 public class CanvasView extends View
 {
@@ -27,38 +26,32 @@ public class CanvasView extends View
                     mBlackPathPaint;
     private float mX, mY;
     private static final float TOLERANCE = 5;
-    private static final float STEP_SIZE = 50f;
+    private static float STEP_SIZE = 100f;
 
     private float fZoomPercentage = 100.f;
     private boolean bForwardInTime = true;
 
-    private Vector<Circle> vCircles = new Vector<>();
-
     private int iMazeSegments = 6; // = height
     private int iMazeDepth = 4; // = width
-    private Maze theMaze = new Maze(iMazeDepth, iMazeSegments, 7, 0, "6bac9aa259cd5516361c9a67"); // goed is: 6bac9aa259cd5516361c9a67
+    private MazePiece theMazePiece;
 
     public void nextStep()
     {
         String str;
         if (bForwardInTime)
+        {
             fZoomPercentage += STEP_SIZE;
-        else
+            STEP_SIZE *= 2;
+        }
+        else if (STEP_SIZE > 50)
+        {
+            STEP_SIZE /= 2;
             fZoomPercentage -= STEP_SIZE;
+        }
         String f = String.format("%2.2f", fZoomPercentage);
         str = "zoom: " + f;
         parent.updateZoomLevel(str);
-        for (int i = 0; i < vCircles.size(); i++)
-        {
-            Circle c = vCircles.elementAt(i);
-            c.updateCircleProps(fZoomPercentage / 100.f);
-            if (c.isUserAddedCircle())
-            {
-                str = "x: " + (int)c.getX() + " y: " + (int)c.getY();
-                parent.updateCircleText(str);
-            }
-        }
-
+        theMazePiece.updateAllCircleProps(fZoomPercentage / 100.f);
         invalidate();
     }
 
@@ -91,27 +84,14 @@ public class CanvasView extends View
         mBlackPathPaint.setStrokeJoin(Paint.Join.ROUND);
         mBlackPathPaint.setStrokeWidth(10f);
 
-        Circle circle0 = new Circle(0.0, 1);
-        Circle circle1 = new Circle(1.0, 1);
-        Circle circle2 = new Circle(2.0, 1);
-        Circle circle3 = new Circle(3.0, 1);
-        //Circle circle4 = new Circle(4.0, 1);
-        //Circle circle5 = new Circle(5.0, 1);
-        //Circle circle6 = new Circle(6.0, 1);
-        //Circle circle7 = new Circle(7.0, 1);
-        //Circle circle8 = new Circle(8.0, 1);
-        //Circle circle9 = new Circle(9.0, 1);
+        initializeMazePiece();
 
-        vCircles.add(circle0);
-        vCircles.add(circle1);
-        vCircles.add(circle2);
-        vCircles.add(circle3);
-        //vCircles.add(circle4);
-        //vCircles.add(circle5);
-        //vCircles.add(circle6);
-        //vCircles.add(circle7);
-        //vCircles.add(circle8);
-        //vCircles.add(circle9);
+    }
+
+    private void initializeMazePiece()
+    {
+        theMazePiece = new MazePiece(iMazeDepth, iMazeSegments, 7, 0, "6bac9aa259cd5516361c9a67"); // goed is: 6bac9aa259cd5516361c9a67
+
     }
 
     // override onSizeChanged
@@ -128,9 +108,9 @@ public class CanvasView extends View
         mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
 
-        for (int i = 0; i < vCircles.size(); i++)
-            if (vCircles.elementAt(i).isCenteredMazeCircle()) // maze circle
-                vCircles.elementAt(i).setCenter(m_fXmiddle, m_fYmiddle, m_fXmiddle, m_fYmiddle, (fZoomPercentage / 100.f));
+        for (int i = 0; i < theMazePiece.getCircleVector().size(); i++)
+            if (theMazePiece.getCircleVector().elementAt(i).isCenteredMazeCircle()) // maze circle
+                theMazePiece.getCircleVector().elementAt(i).setCenter(m_fXmiddle, m_fYmiddle, m_fXmiddle, m_fYmiddle, (fZoomPercentage / 100.f));
     }
 
     // override onDraw
@@ -139,26 +119,18 @@ public class CanvasView extends View
     {
         super.onDraw(canvas);
 
-        for (int i = 0; i < vCircles.size(); i++)
+        for (int i = 0; i < theMazePiece.getCircleVector().size(); i++)
         {
-            Circle c = vCircles.elementAt(i);
+            Circle c = theMazePiece.getCircleVector().elementAt(i);
             mGreenMazeLinePaint.setStrokeWidth(c.getStrokeWidth());
-            //if (i != 0)
-            //   canvas.drawCircle(c.getX(), c.getY(), c.getRadius(), mGreenMazeLinePaint);
-            //else
+            for (int segment = 0; segment < iMazeSegments; segment++)
             {
-                for (int segment = 0; segment < iMazeSegments; segment++)
-                {
-                    boolean bHasWallSegment = theMaze.hasWallSegmentAt(i, segment);
-                    if (bHasWallSegment)
-                        canvas.drawArc(c.getRect(), segment * 60.f, 60.f, false, mGreenMazeLinePaint);
-                }
+                boolean bHasWallSegment = theMazePiece.hasWallSegmentAt(i, segment);
+                if (bHasWallSegment)
+                    canvas.drawArc(c.getRect(), segment * (360.f / (float) iMazeSegments), (360.f / (float) iMazeSegments), false, mGreenMazeLinePaint);
             }
-
-
         }
 
-        //canvas.drawCircle(m_iScreenWidth / 2, m_iScreenHeight / 2, fRadius / 4, mGreenMazeLinePaint);
         // draw the mPath with the mPaint on the canvas when onDraw
         canvas.drawPath(mPath, mBlackPathPaint);
     }
@@ -191,13 +163,13 @@ public class CanvasView extends View
 
     private void upTouch(float x, float y)
     {
-        Circle newCircle = new Circle(x, y, 2, 2, (fZoomPercentage / 100.f));
-        newCircle.setCenter(x, y, m_fXmiddle, m_fYmiddle, (fZoomPercentage / 100.f));
-        newCircle.updateCircleProps(fZoomPercentage / 100.f);
+        //Circle newCircle = new Circle(x, y, 2, 2, (fZoomPercentage / 100.f));
+        //newCircle.setCenter(x, y, m_fXmiddle, m_fYmiddle, (fZoomPercentage / 100.f));
+        //newCircle.updateCircleProps(fZoomPercentage / 100.f);
 
-        vCircles.add(newCircle);
-        String str = "x: " + (int)newCircle.getX() + " y: " + (int)newCircle.getY();
-        parent.updateCircleText(str);
+        //vCircles.add(newCircle);
+        //String str = "x: " + (int)newCircle.getX() + " y: " + (int)newCircle.getY();
+        //parent.updateCircleText(str);
     }
 
     //override the onTouchEvent
