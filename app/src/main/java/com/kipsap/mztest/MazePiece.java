@@ -27,13 +27,22 @@ public class MazePiece
         }
     }
 
-    public boolean hasWallSegmentAt(int level, int yPos)
+    public boolean hasOuterWallSegmentAt(int level, int yPos)
     {
-        //checks if a certain position has a wall on the right (=outer) side
+        //checks if a certain position has a wall on the right (=outer) side of the cell
         int x = iWidth - (level % iWidth) - 1; //this should be "iWidth - level - 1;" when not drawing segments doubly
         int idx = yPos * iWidth + x;
         char c = mzString.charAt(idx);
         return (c == '4' || c == '5' || c == '6' || c == '7' || c == 'c' || c == 'd' || c == 'e' || c == 'f');
+    }
+
+    public boolean hasLowerWallSegmentAt(int level, int yPos)
+    {
+        //checks if a certain position has a wall on the upper side of the cell
+        int x = iWidth - (level % iWidth) - 1; //this should be "iWidth - level - 1;" when not drawing segments doubly
+        int idx = yPos * iWidth + x;
+        char c = mzString.charAt(idx);
+        return (c == '2' || c == '3' || c == '6' || c == '7' || c == 'a' || c == 'b' || c == 'e' || c == 'f');
     }
 
     public void updateAllCircleProps(float fzoom)

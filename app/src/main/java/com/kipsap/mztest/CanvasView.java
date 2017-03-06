@@ -125,9 +125,23 @@ public class CanvasView extends View
             mGreenMazeLinePaint.setStrokeWidth(c.getStrokeWidth());
             for (int segment = 0; segment < iMazeSegments; segment++)
             {
-                boolean bHasWallSegment = theMazePiece.hasWallSegmentAt(i, segment);
-                if (bHasWallSegment)
+                boolean bHasOuterWallSegment = theMazePiece.hasOuterWallSegmentAt(i, segment);
+                boolean bHasLowerWallSegment = theMazePiece.hasLowerWallSegmentAt(i, segment);
+                if (bHasOuterWallSegment)
                     canvas.drawArc(c.getRect(), segment * (360.f / (float) iMazeSegments), (360.f / (float) iMazeSegments), false, mGreenMazeLinePaint);
+                if (bHasLowerWallSegment && i == 1)
+                {
+                    double angle = (((segment * (360.f / (float) iMazeSegments)) / 360.f) * 2.f * Math.PI) - 0.5f * Math.PI;
+                    double delta_x_start = 0.5 * c.getRadius() * Math.sin(angle);
+                    float fx_start = c.getX() + (float)delta_x_start;
+                    double delta_y_start = 0.5 * c.getRadius() * Math.cos(angle);
+                    float fy_start = c.getY() + (float)delta_y_start;
+                    double delta_x_end = c.getRadius() * Math.sin(angle);
+                    float fx_end = c.getX() + (float)delta_x_end;
+                    double delta_y_end = c.getRadius() * Math.cos(angle);
+                    float fy_end = c.getY() + (float)delta_y_end;
+                    canvas.drawLine(fx_start, fy_start, fx_end, fy_end, mGreenMazeLinePaint);
+                }
             }
         }
 
