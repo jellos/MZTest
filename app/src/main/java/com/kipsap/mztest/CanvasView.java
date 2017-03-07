@@ -31,8 +31,8 @@ public class CanvasView extends View
     private float fZoomPercentage = 100.f;
     private boolean bForwardInTime = true;
 
-    private int iMazeSegments = 6; // = height
-    private int iMazeDepth = 4; // = width
+    private int iMazeSegments = 12; // = height
+    private int iMazeDepth = 5; // = width
     private MazePiece theMazePiece;
 
     public void nextStep()
@@ -90,7 +90,9 @@ public class CanvasView extends View
 
     private void initializeMazePiece()
     {
-        theMazePiece = new MazePiece(iMazeDepth, iMazeSegments, 7, 0, "6bac9aa259cd5516361c9a67"); // goed is: 6bac9aa259cd5516361c9a67
+        //theMazePiece = new MazePiece(iMazeDepth, iMazeSegments, 7, 0, "6bac9aa259cd5516361c9a67"); // w4h6 // goed is: 6bac9aa259cd5516361c9a67
+        //theMazePiece = new MazePiece(iMazeDepth, iMazeSegments, 23, 24, "b0acd3a41a845b675b8c3863c79e382e"); //w4h8
+        theMazePiece = new MazePiece(iMazeDepth, iMazeSegments, 49, 35, "3675dd9a26369cd9a6345ddd5126555d9062653e9e3cd1aa611a8a4590c7"); //w5h12
 
     }
 
@@ -128,7 +130,7 @@ public class CanvasView extends View
                 boolean bHasOuterWallSegment = theMazePiece.hasOuterWallSegmentAt(i, segment);
                 boolean bHasLowerWallSegment = theMazePiece.hasLowerWallSegmentAt(i, segment);
                 if (bHasOuterWallSegment)
-                    canvas.drawArc(c.getRect(), segment * (360.f / (float) iMazeSegments), (360.f / (float) iMazeSegments), false, mGreenMazeLinePaint);
+                    canvas.drawArc(c.getOuterRect(), segment * (360.f / (float) iMazeSegments), (360.f / (float) iMazeSegments), false, mGreenMazeLinePaint);
                 if (bHasLowerWallSegment)
                 {
                     float fsegmentlength = 1.f / (float) iMazeSegments;
@@ -143,6 +145,10 @@ public class CanvasView extends View
                     double delta_y_end = c.getRadius() * Math.cos(angle);
                     float fy_end = c.getY() + (float)delta_y_end;
                     canvas.drawLine(fx_start, fy_start, fx_end, fy_end, mGreenMazeLinePaint);
+                }
+                if (i == theMazePiece.getCircleVector().size() - 1 && theMazePiece.hasInnerWallSegmentAt(i, segment))
+                {
+                    canvas.drawArc(c.getInnerRect(), segment * (360.f / (float) iMazeSegments), (360.f / (float) iMazeSegments), false, mGreenMazeLinePaint);
                 }
             }
         }

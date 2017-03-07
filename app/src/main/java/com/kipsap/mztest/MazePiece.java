@@ -20,7 +20,7 @@ public class MazePiece
         mzString = mzstr;
 
         vCircles = new Vector<>();
-        for (double circle = 0.0; circle < iWidth * 3; circle++)
+        for (double circle = 0.0; circle < iWidth; circle++)
         {
             Circle c = new Circle(circle, 1);
             vCircles.addElement(c);
@@ -43,6 +43,15 @@ public class MazePiece
         int idx = yPos * iWidth + x;
         char c = mzString.charAt(idx);
         return (c == '2' || c == '3' || c == '6' || c == '7' || c == 'a' || c == 'b' || c == 'e' || c == 'f');
+    }
+
+    public boolean hasInnerWallSegmentAt(int level, int yPos)
+    {
+        //checks if a certain position has a wall on the left (=inner) side of the cell
+        int x = iWidth - (level % iWidth) - 1; //this should be "iWidth - level - 1;" when not drawing segments doubly
+        int idx = yPos * iWidth + x;
+        char c = mzString.charAt(idx);
+        return (c == '1' || c == '3' || c == '5' || c == '7' || c == '9' || c == 'b' || c == 'd' || c == 'f');
     }
 
     public void updateAllCircleProps(float fzoom)

@@ -78,9 +78,14 @@ public class Circle
         return m_fRadius / 50.f;
     }
 
-    public RectF getRect()
+    public RectF getOuterRect()
     {
         return new RectF(m_fX - m_fRadius, m_fY - m_fRadius, m_fX + m_fRadius, m_fY + m_fRadius);
+    }
+
+    public RectF getInnerRect()
+    {
+        return new RectF(m_fX - (m_fRadius / 2.f), m_fY - (m_fRadius / 2.f), m_fX + (m_fRadius / 2.f), m_fY + (m_fRadius / 2.f));
     }
 
 
