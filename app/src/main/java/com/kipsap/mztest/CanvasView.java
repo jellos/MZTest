@@ -129,9 +129,11 @@ public class CanvasView extends View
                 boolean bHasLowerWallSegment = theMazePiece.hasLowerWallSegmentAt(i, segment);
                 if (bHasOuterWallSegment)
                     canvas.drawArc(c.getRect(), segment * (360.f / (float) iMazeSegments), (360.f / (float) iMazeSegments), false, mGreenMazeLinePaint);
-                if (bHasLowerWallSegment && i == 1)
+                if (bHasLowerWallSegment)
                 {
-                    double angle = (((segment * (360.f / (float) iMazeSegments)) / 360.f) * 2.f * Math.PI) - 0.5f * Math.PI;
+                    float fsegmentlength = 1.f / (float) iMazeSegments;
+                    float fraction = (float)segment * fsegmentlength;
+                    double angle = (2.f * Math.PI) - (((fraction * 2.f * Math.PI)) - 0.5f * Math.PI) - (fsegmentlength * 2.f * Math.PI);
                     double delta_x_start = 0.5 * c.getRadius() * Math.sin(angle);
                     float fx_start = c.getX() + (float)delta_x_start;
                     double delta_y_start = 0.5 * c.getRadius() * Math.cos(angle);

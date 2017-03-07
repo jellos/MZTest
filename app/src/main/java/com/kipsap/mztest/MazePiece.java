@@ -38,7 +38,7 @@ public class MazePiece
 
     public boolean hasLowerWallSegmentAt(int level, int yPos)
     {
-        //checks if a certain position has a wall on the upper side of the cell
+        //checks if a certain position has a wall on the lower side of the cell
         int x = iWidth - (level % iWidth) - 1; //this should be "iWidth - level - 1;" when not drawing segments doubly
         int idx = yPos * iWidth + x;
         char c = mzString.charAt(idx);
